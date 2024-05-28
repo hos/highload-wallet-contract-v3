@@ -1,11 +1,11 @@
-import { beginCell, toNano, Cell } from '@ton/core';
-import { keyPairFromSeed, mnemonicToSeed, getSecureRandomBytes } from '@ton/crypto';
+import { toNano } from '@ton/core';
+import { keyPairFromSeed, getSecureRandomBytes } from '@ton/crypto';
 import { HighloadWalletV3 } from '../wrappers/HighloadWalletV3';
 import { compile, NetworkProvider } from '@ton/blueprint';
 
 export async function run(provider: NetworkProvider) {
     const seed = await getSecureRandomBytes(32);
-    const keyPair = await keyPairFromSeed(seed);
+    const keyPair = keyPairFromSeed(seed);
 
     let timeout = await (async () => {
         while (true) {
@@ -38,10 +38,10 @@ export async function run(provider: NetworkProvider) {
 
     await highloadWalletV3.sendDeploy(provider.sender(), toNano('0.1'));
 
-    provider.ui().write('Deployed HighloadWalletV3');
+    provider.ui().write('✅ Deployed HighloadWalletV3');
     provider.ui().write(`Seed: ${seed.toString('hex')}`);
     provider.ui().write(`Public key: ${keyPair.publicKey.toString('hex')}`);
     provider.ui().write(`Address: ${highloadWalletV3.address}`);
 
-    await provider.waitForDeploy(highloadWalletV3.address, 10, 5);
+    await provider.waitForDeploy(highloadWalletV3.address, 10, 10);
 }
